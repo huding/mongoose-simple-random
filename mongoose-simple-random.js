@@ -80,7 +80,11 @@ module.exports = exports = function (schema) {
       var limit = 1,
         populate = null;
       if (err) {
-        return args.callback(err, undefined);
+        if (typeof args.callback === 'function') {
+          return args.callback(err, undefined);
+        } else {
+          return err;
+        }
       }
       if (args.options && args.options.limit) {
         limit = args.options.limit;
@@ -110,14 +114,21 @@ module.exports = exports = function (schema) {
     args.options.limit = 1;
     this.findRandom(args.conditions, args.fields, args.options, function(err, docs) {
       if (docs && docs.length === 1) {
-        return args.callback(err, docs[0]);
+        if (typeof args.callback === 'function') {
+          return args.callback(err, docs[0]);
+        } else {
+          return docs[0];
+        }
       }
 
       if (!err) {
         err = "findOneRandom yielded no results.";
       }
-
-      return args.callback(err);
+      if (typeof args.callback === 'function') {
+        return args.callback(err);
+      } else {
+        return err
+      }
     });
   };
 };
