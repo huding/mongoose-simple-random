@@ -82,14 +82,14 @@ module.exports = exports = function (schema) {
       if (err) {
         return args.callback(err, undefined);
       }
-      if (args.options.limit) {
+      if (args.options && args.options.limit) {
         limit = args.options.limit;
         delete args.options.limit;
       }
       if (limit > count) {
         limit = count;
       }
-      if (args.options.populate) {
+      if (args.options && args.options.populate) {
         populate = args.options.populate;
         delete args.options.populate;
       }
@@ -106,7 +106,7 @@ module.exports = exports = function (schema) {
 
   schema.statics.findOneRandom = function (conditions, fields, options, callback) {
     var args = utils.checkParams(conditions, fields, options, callback);
-
+    if (!args.options) args.options = {}
     args.options.limit = 1;
     this.findRandom(args.conditions, args.fields, args.options, function(err, docs) {
       if (docs && docs.length === 1) {
